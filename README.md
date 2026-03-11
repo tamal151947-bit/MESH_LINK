@@ -190,6 +190,14 @@ Testing requires **3 physical Android devices** on Android 10 or later. WiFi sho
 
 ---
 
+## Demo
+
+
+https://github.com/user-attachments/assets/d6df6afc-fd11-47a3-90f0-fcd657fb1ef9
+
+
+---
+
 ## Packet Format
 
 All packets are JSON transmitted as UTF-8 byte payloads over Nearby Connections.
