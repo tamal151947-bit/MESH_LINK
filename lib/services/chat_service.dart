@@ -19,51 +19,49 @@ class ChatService extends ChangeNotifier {
     final json = jsonDecode(raw) as Map<String, dynamic>;
     final msg = MeshMessage.fromJson(json);
 
-    // De-duplicate: drop if already seen
     if (mesh.seenPacketIds.length > 1000) mesh.seenPacketIds.clear();
     if (mesh.seenPacketIds.contains(msg.id)) return;
     mesh.seenPacketIds.add(msg.id);
 
-    // Route call signals to CallService
     if (msg.type == MessageType.call_signal) {
-      // Only dispatch if signal is addressed to us (or broadcast)
       if (msg.toId == null || msg.toId == mesh.deviceId) {
         CallService.instance?.handleSignal(msg);
       }
-      // Don't relay if it was addressed to us
       if (msg.toId != null && msg.toId == mesh.deviceId) return;
       if (msg.hops < 10) {
         msg.hops += 1;
-        mesh.broadcast(jsonEncode(msg.toJson()),
-            excludeEndpoint: senderEndpointId);
+        mesh.broadcast(
+          jsonEncode(msg.toJson()),
+          excludeEndpoint: senderEndpointId,
+        );
       }
       return;
     }
 
-    // Targeted message
     if (msg.toId != null) {
       if (msg.toId == mesh.deviceId) {
-        // For us: store, don't relay
         messages.add(msg);
         notifyListeners();
       } else {
-        // For someone else: relay only, don't store
         if (msg.hops < 10) {
           msg.hops += 1;
-          mesh.broadcast(jsonEncode(msg.toJson()),
-              excludeEndpoint: senderEndpointId);
+          mesh.broadcast(
+            jsonEncode(msg.toJson()),
+            excludeEndpoint: senderEndpointId,
+          );
         }
       }
       return;
     }
 
-    // Broadcast (toId == null): store + relay
     messages.add(msg);
     notifyListeners();
     if (msg.hops < 10) {
       msg.hops += 1;
-      mesh.broadcast(jsonEncode(msg.toJson()),
-          excludeEndpoint: senderEndpointId);
+      mesh.broadcast(
+        jsonEncode(msg.toJson()),
+        excludeEndpoint: senderEndpointId,
+      );
     }
   }
 
@@ -114,7 +112,6 @@ class ChatService extends ChangeNotifier {
       hops: 0,
     );
     mesh.seenPacketIds.add(msg.id);
-    // Signal messages are control-plane only — not added to messages list
     mesh.broadcast(jsonEncode(msg.toJson()));
   }
 }

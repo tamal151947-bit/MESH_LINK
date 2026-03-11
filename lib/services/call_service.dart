@@ -34,8 +34,6 @@ class CallService extends ChangeNotifier {
     remoteRenderer.initialize();
   }
 
-  // ─── Outgoing call ───
-
   Future<void> startCall(String peerId, String peerName) async {
     final callId = const Uuid().v4();
     currentSession = CallSession(
@@ -57,8 +55,6 @@ class CallService extends ChangeNotifier {
     );
   }
 
-  // ─── Signal dispatch ───
-
   void handleSignal(MeshMessage msg) {
     final data = jsonDecode(msg.content) as Map<String, dynamic>;
     final type = data['type'] as String;
@@ -74,9 +70,9 @@ class CallService extends ChangeNotifier {
     }
   }
 
-  void _handleOffer(
-      String fromId, String fromName, Map<String, dynamic> data) {
-    incomingCallFrom = mesh.connectedPeers[fromId] ??
+  void _handleOffer(String fromId, String fromName, Map<String, dynamic> data) {
+    incomingCallFrom =
+        mesh.connectedPeers[fromId] ??
         MeshPeer(
           endpointId: fromId,
           displayName: fromName,
@@ -97,8 +93,10 @@ class CallService extends ChangeNotifier {
     if (_pendingOffer == null || currentSession == null) return;
     await _setupPeerConnection(currentSession!.remotePeerId);
 
-    final offer =
-        RTCSessionDescription(_pendingOffer!['sdp'] as String, 'offer');
+    final offer = RTCSessionDescription(
+      _pendingOffer!['sdp'] as String,
+      'offer',
+    );
     await _pc!.setRemoteDescription(offer);
 
     final answer = await _pc!.createAnswer();
@@ -137,8 +135,7 @@ class CallService extends ChangeNotifier {
   }
 
   Future<void> _handleAnswer(Map<String, dynamic> data) async {
-    final answer =
-        RTCSessionDescription(data['sdp'] as String, 'answer');
+    final answer = RTCSessionDescription(data['sdp'] as String, 'answer');
     await _pc?.setRemoteDescription(answer);
     currentSession?.state = CallState.active;
     notifyListeners();
@@ -158,13 +155,14 @@ class CallService extends ChangeNotifier {
   Future<void> _setupPeerConnection(String remotePeerId) async {
     _pc = await createPeerConnection({'iceServers': []});
 
-    _localStream = await navigator.mediaDevices
-        .getUserMedia({'audio': true, 'video': false});
+    _localStream = await navigator.mediaDevices.getUserMedia({
+      'audio': true,
+      'video': false,
+    });
     for (final track in _localStream!.getAudioTracks()) {
       await _pc!.addTrack(track, _localStream!);
     }
 
-    // Route audio through the speaker (not earpiece) on Android
     await Helper.setSpeakerphoneOn(true);
 
     _pc!.onIceCandidate = (candidate) {

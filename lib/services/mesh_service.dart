@@ -11,7 +11,6 @@ class MeshService extends ChangeNotifier {
       'Node-${Random().nextInt(0xFFFF).toRadixString(16).toUpperCase().padLeft(4, '0')}';
 
   final Map<String, MeshPeer> connectedPeers = {};
-  // Holds displayName for connections that are initiated but not yet confirmed
   final Map<String, String> _pendingNames = {};
   final Set<String> seenPacketIds = {};
 
@@ -50,7 +49,6 @@ class MeshService extends ChangeNotifier {
   }
 
   void _handleConnectionInitiated(String id, ConnectionInfo info) {
-    // Store display name temporarily — we'll promote to connectedPeers on CONNECTED
     _pendingNames[id] = info.endpointName;
     Nearby().acceptConnection(
       id,

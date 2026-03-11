@@ -51,7 +51,6 @@ class _CallScreenState extends State<CallScreen> {
       builder: (context, callService, _) {
         final session = callService.currentSession;
 
-        // Auto-pop when call ends
         if (session == null || session.state == CallState.ended) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted && Navigator.canPop(context)) Navigator.pop(context);
@@ -64,7 +63,6 @@ class _CallScreenState extends State<CallScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Zero-size renderer keeps audio pipeline alive on Android
                 SizedBox(
                   width: 0,
                   height: 0,
@@ -83,19 +81,19 @@ class _CallScreenState extends State<CallScreen> {
                 Text(
                   session?.remoteName ?? 'Unknown',
                   style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   session?.state == CallState.calling
                       ? 'Calling...'
                       : session?.state == CallState.ringing
-                          ? 'Ringing...'
-                          : _formatDuration(_seconds),
-                  style:
-                      const TextStyle(fontSize: 18, color: Colors.white70),
+                      ? 'Ringing...'
+                      : _formatDuration(_seconds),
+                  style: const TextStyle(fontSize: 18, color: Colors.white70),
                 ),
                 const Spacer(),
                 Row(

@@ -31,9 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<MeshMessage> _filteredMessages(ChatService chat, String deviceId) {
     return chat.messages.where((m) {
-      // Messages from this peer (fromId is the remote's advertised deviceId)
       final isFromPeer = m.fromId == widget.peer.displayName;
-      // Messages we sent to this peer
       final isFromMeToPeer =
           m.fromId == deviceId && m.toId == widget.peer.displayName;
       return isFromPeer || isFromMeToPeer;
@@ -72,7 +70,9 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.call),
             onPressed: () {
               callService.startCall(
-                  widget.peer.displayName, widget.peer.displayName);
+                widget.peer.displayName,
+                widget.peer.displayName,
+              );
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const CallScreen()),
@@ -104,7 +104,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildInputRow(
-      BuildContext context, ChatService chat, VoiceService voice) {
+    BuildContext context,
+    ChatService chat,
+    VoiceService voice,
+  ) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -116,8 +119,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 decoration: const InputDecoration(
                   hintText: 'Type a message...',
                   border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
                 onSubmitted: (_) => _sendText(chat),
               ),
@@ -137,8 +142,7 @@ class _ChatScreenState extends State<ChatScreen> {
               },
               child: Consumer<VoiceService>(
                 builder: (_, v, child) => CircleAvatar(
-                  backgroundColor:
-                      v.isRecording ? Colors.red : Colors.teal,
+                  backgroundColor: v.isRecording ? Colors.red : Colors.teal,
                   child: Icon(
                     v.isRecording ? Icons.stop : Icons.mic,
                     color: Colors.white,

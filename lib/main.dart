@@ -29,18 +29,21 @@ class MeshLinkApp extends StatelessWidget {
           update: (ctx, mesh, prev) => prev ?? ChatService(mesh),
         ),
         ChangeNotifierProxyProvider2<MeshService, ChatService, CallService>(
-          create: (ctx) => CallService(
-            ctx.read<MeshService>(),
-            ctx.read<ChatService>(),
-          ),
+          create: (ctx) =>
+              CallService(ctx.read<MeshService>(), ctx.read<ChatService>()),
           update: (ctx, mesh, chat, prev) => prev ?? CallService(mesh, chat),
         ),
         ChangeNotifierProvider(create: (_) => VoiceService()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'MeshLink',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF00D4AA),
+            brightness: Brightness.dark,
+          ),
+          scaffoldBackgroundColor: const Color(0xFF0A0E1A),
           useMaterial3: true,
         ),
         home: const PermissionGateway(),
@@ -58,8 +61,8 @@ class PermissionGateway extends StatefulWidget {
 
 class _PermissionGatewayState extends State<PermissionGateway> {
   bool _ready = false;
-  bool _loading = true;   // While reading saved name from disk
-  bool _hasName = false;  // True once a name is confirmed
+  bool _loading = true; // While reading saved name from disk
+  bool _hasName = false; // True once a name is confirmed
   String _status = 'Requesting permissions…';
   final _nameController = TextEditingController();
 
@@ -119,13 +122,15 @@ class _PermissionGatewayState extends State<PermissionGateway> {
       Permission.nearbyWifiDevices,
     ].request();
 
-    final denied =
-        statuses.values.any((s) => s.isDenied || s.isPermanentlyDenied);
+    final denied = statuses.values.any(
+      (s) => s.isDenied || s.isPermanentlyDenied,
+    );
 
     if (denied) {
       setState(
-          () => _status =
-              'Some permissions were denied. Please grant them in Settings.');
+        () => _status =
+            'Some permissions were denied. Please grant them in Settings.',
+      );
       return;
     }
 
