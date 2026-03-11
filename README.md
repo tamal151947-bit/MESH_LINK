@@ -1,63 +1,61 @@
-# MeshLink
+# 📡 MeshLink
+## 🔗 Offline Peer-to-Peer Communication Mesh
 
-## Offline Peer-to-Peer Communication Mesh
+🚨 Offline peer-to-peer communication — text, voice messages, and live calls — with zero infrastructure.
 
-Offline peer-to-peer communication for text, voice messages, and live calls, with zero infrastructure.
+MeshLink is a Flutter application that enables structured, resilient mesh networking between Android devices using WiFi Direct. Devices discover each other automatically, relay messages across multi-hop chains, and support real-time voice calls — all without a router, cell tower, or internet connection.
 
-MeshLink is a Flutter application that enables structured, resilient mesh networking between Android devices using WiFi Direct. Devices discover each other automatically, relay messages across multi-hop chains, and support real-time voice calls, all without a router, cell tower, or internet connection.
+## ✨ Key Highlights
 
-## Key Highlights
+⚡ No Internet Required  
+📡 WiFi Direct Mesh Networking  
+📨 Text Messaging  
+🎙 Voice Messages  
+📞 Live Voice Calls (WebRTC)  
+🔁 Multi-Hop Message Relay  
+🚨 Emergency Broadcast System  
+🧠 Self-Healing Network
 
-- No Internet Required
-- WiFi Direct Mesh Networking
-- Text Messaging
-- Voice Messages
-- Live Voice Calls (WebRTC)
-- Multi-Hop Message Relay
-- Emergency Broadcast System
-- Self-Healing Network
+## 📸 Demo
+### 🎥 Demo Video
 
-## Demo
+Demo Video:  
+WhatsApp.Video.2026-03-11.at.5.12.13.PM.mp4
 
-### Demo Video
+(You can also upload it to YouTube later and paste the link here)
 
-Demo video file:
+## 📱 App Screenshots
 
-`WhatsApp.Video.2026-03-11.at.5.12.13.PM.mp4`
+(Add real screenshots here later)
 
-You can upload this to YouTube later and replace this with a public link.
+Home Screen  
+Chat Screen  
+Voice Message  
+Call Screen
 
-## App Screenshots
+## 🧠 Mesh Architecture Diagram
 
-Add real screenshots here later.
+(You can later upload an architecture diagram image)
 
-- Home Screen
-- Chat Screen
-- Voice Message
-- Call Screen
+Example:
 
-## Mesh Architecture Diagram
+## 📚 Table of Contents
 
-You can upload an architecture diagram image here later.
+- [Use Cases](#-use-cases)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Permissions](#-permissions)
+- [Build Plan](#-build-plan)
+- [Testing](#-testing)
+- [Packet Format](#-packet-format)
+- [Relay Logic](#-relay-logic)
+- [Contributing](#-contributing)
+- [Developer](#-developer)
+- [Support](#-support)
 
-## Table of Contents
-
-- [Use Cases](#use-cases)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Permissions](#permissions)
-- [Build Plan](#build-plan)
-- [Testing](#testing)
-- [APK Build](#apk-build)
-- [Packet Format](#packet-format)
-- [Relay Logic](#relay-logic)
-- [Contributing](#contributing)
-- [Developer](#developer)
-- [Support](#support)
-
-## Use Cases
+## 🌍 Use Cases
 
 | Scenario | How MeshLink Helps |
 |---|---|
@@ -66,38 +64,46 @@ You can upload an architecture diagram image here later.
 | Privacy-first networking | Share voice and text directly between devices |
 | Tactical coordination | Rapid peer discovery with multi-hop routing |
 
-## Features
+## 🚀 Features
 
-- Automatic peer discovery: devices advertise and discover simultaneously; no manual IP or node configuration required
-- Multi-hop message relay: messages propagate across the mesh even when sender and recipient have no direct link
-- Text chat: broadcast or targeted messaging with severity tagging (NORMAL / MODERATE / CRITICAL)
-- Voice messages: hold-to-record, base64-encoded, chunked for large files, played back on any mesh node
-- Live voice calls: WebRTC audio over the mesh, with signaling relayed through intermediate peers
-- Triage or emergency broadcast: structured emergency form that broadcasts to all reachable nodes
-- Hop counter: every message displays how many relay hops it traversed
-- No single point of failure: mesh self-heals when nodes disconnect or rejoin
+Automatic peer discovery — devices advertise and discover simultaneously; no manual IP or node configuration required.
 
-## Architecture
+Multi-hop message relay — messages propagate across the mesh even when sender and recipient have no direct link.
 
+Text chat — broadcast or targeted messaging with severity tagging  
+(NORMAL / MODERATE / CRITICAL).
+
+Voice messages — hold-to-record, base64-encoded, chunked for large files, played back on any mesh node.
+
+Live voice calls — WebRTC audio over the mesh, with signaling relayed through intermediate peers.
+
+Triage / emergency broadcast — structured emergency form that broadcasts to all reachable nodes.
+
+Hop counter — every message displays how many relay hops it traversed.
+
+No single point of failure — mesh self-heals when nodes disconnect or rejoin.
+
+## 🏗 Architecture
+
+```text
+Phone A ←——WiFi Direct——→ Phone B ←——WiFi Direct——→ Phone C
+  (advertise + discover)    (relay node)               (discover only)
+         ↑                        ↑                          ↑
+    MeshService             MeshService                MeshService
+    ChatService             ChatService                ChatService
+    VoiceService            VoiceService               VoiceService
+    CallService             CallService                CallService
 ```
-Phone A <------WiFi Direct------> Phone B <------WiFi Direct------> Phone C
-  (advertise + discover)           (relay node)                    (discover only)
-           ^                           ^                                ^
-      MeshService                 MeshService                     MeshService
-      ChatService                 ChatService                     ChatService
-      VoiceService                VoiceService                    VoiceService
-      CallService                 CallService                     CallService
-```
 
-Transport layer: `nearby_connections` (WiFi Direct, `P2P_CLUSTER` strategy)
+Transport layer: nearby_connections (WiFi Direct, P2P_CLUSTER strategy)
 
-Calling layer: `flutter_webrtc` for real-time audio.
+Calling layer: flutter_webrtc for real-time audio.
 
-Voice messages: recorded with `record`, encoded to base64, transmitted as JSON payload, decoded and played back with `just_audio`.
+Voice messages: Recorded with record, encoded to base64, transmitted as JSON payload, decoded and played back with just_audio.
 
-## Project Structure
+## 📂 Project Structure
 
-```
+```text
 lib/
 ├── main.dart
 ├── models/
@@ -124,14 +130,14 @@ lib/
     └── call_overlay.dart
 ```
 
-## Getting Started
+## ⚙️ Getting Started
 
 ### Prerequisites
 
-- Flutter SDK >=3.0.0
-- Android SDK 30+
+Flutter SDK >=3.0.0  
+Android SDK 30+
 
-WiFi Direct cannot be tested on emulators.
+⚠ WiFi Direct cannot be tested on emulators.
 
 You need 3 physical Android devices.
 
@@ -144,7 +150,7 @@ flutter pub get
 flutter run
 ```
 
-## Dependencies
+## 📦 Dependencies
 
 ```yaml
 nearby_connections: ^4.1.0
@@ -158,27 +164,27 @@ permission_handler: ^11.3.0
 encrypt: ^5.0.3
 ```
 
-## Permissions
+## 🔐 Permissions
 
-Add to `AndroidManifest.xml`:
+Add to AndroidManifest.xml
 
-```xml
-<uses-permission android:name="android.permission.BLUETOOTH"/>
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-<uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"/>
+```text
+BLUETOOTH
+BLUETOOTH_ADMIN
+ACCESS_WIFI_STATE
+CHANGE_WIFI_STATE
+ACCESS_FINE_LOCATION
+NEARBY_WIFI_DEVICES
 
-<uses-permission android:name="android.permission.RECORD_AUDIO"/>
-<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+RECORD_AUDIO
+MODIFY_AUDIO_SETTINGS
 
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.CAMERA"/>
+READ_EXTERNAL_STORAGE
+WRITE_EXTERNAL_STORAGE
+CAMERA
 ```
 
-## Build Plan
+## 🛠 Build Plan
 
 | Hour | Focus |
 |---|---|
@@ -193,25 +199,25 @@ Add to `AndroidManifest.xml`:
 | 9 | Multi-device testing |
 | 10 | Edge cases |
 
-## Testing
+## 🧪 Testing
 
 Testing requires 3 Android devices.
 
 | Test | Phone A | Phone B | Phone C | Result |
 |---|---|---|---|---|
-| Basic connect | Start | Start | - | A <-> B |
+| Basic connect | Start | Start | — | A ↔ B |
 | Hop relay | Send | Relay | Receive | Works |
-| Voice message | Record | - | - | Works |
+| Voice message | Record | — | — | Works |
 | Call via relay | Initiate | Relay | Receive | Works |
-| Disconnection | Kill app | - | - | Self-heals |
+| Disconnection | Kill app | — | — | Self-heals |
 
-## APK Build
+## 📦 APK Build
 
-APK download:
+APK Download:
 
 https://drive.google.com/file/d/16vyuYAnuxbvokqJTreew4oc5GHST9YcF/view
 
-## Packet Format
+## 📡 Packet Format
 
 Text message:
 
@@ -245,39 +251,40 @@ WebRTC call signal:
 }
 ```
 
-## Relay Logic
+## 🔁 Relay Logic
 
-- Packets are deduplicated using `seenPacketIds`
-- Broadcast packets are delivered locally then relayed
-- Target packets are delivered only to the target device
-- Max hop limit = 10
-- Old packets are removed after 10 minutes
+Packets deduplicated using seenPacketIds.
 
-## Contributing
+Broadcast packets → delivered locally then relayed.  
+Target packets → delivered only to target device.
 
-Contributions are welcome.
+Max hop limit = 10.
 
-1. Fork the repository
-2. Create a new branch
-3. Make improvements
-4. Submit a pull request
+Old packets removed after 10 minutes.
 
-## Developer
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1️⃣ Fork the repository  
+2️⃣ Create a new branch  
+3️⃣ Make improvements  
+4️⃣ Submit a Pull Request
+
+## 👨‍💻 Developer
 
 Developed by Tamal Kar
 
-Computer Science Engineering Student
+🎓 Computer Science Engineering Student  
+💡 Interested in AI, Networking, and Real-World Problem Solving
 
-Interested in AI, Networking, and Real-World Problem Solving
-
-GitHub:
-
+GitHub:  
 https://github.com/tamal151947-bit
 
-## Support
+## ⭐ Support
 
 If you like this project:
 
-- Star the repository
-- Fork the project
-- Share it with others
+⭐ Star the repository  
+🍴 Fork the project  
+📢 Share it with others
