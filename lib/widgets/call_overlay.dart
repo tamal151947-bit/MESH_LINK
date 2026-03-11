@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/call_screen.dart';
 import '../services/call_service.dart';
 
 class CallOverlay extends StatelessWidget {
@@ -30,7 +31,16 @@ class CallOverlay extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.call, color: Colors.white),
                     tooltip: 'Accept',
-                    onPressed: () => callService.acceptCall(),
+                    onPressed: () async {
+                      await callService.acceptCall();
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const CallScreen()),
+                        );
+                      }
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.call_end, color: Colors.red),

@@ -54,7 +54,7 @@ class _CallScreenState extends State<CallScreen> {
         // Auto-pop when call ends
         if (session == null || session.state == CallState.ended) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) Navigator.pop(context);
+            if (mounted && Navigator.canPop(context)) Navigator.pop(context);
           });
         }
 
@@ -64,8 +64,10 @@ class _CallScreenState extends State<CallScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Hidden renderer keeps audio pipeline alive on Android
-                Offstage(
+                // Zero-size renderer keeps audio pipeline alive on Android
+                SizedBox(
+                  width: 0,
+                  height: 0,
                   child: RTCVideoView(callService.remoteRenderer),
                 ),
                 const Spacer(),
@@ -109,10 +111,7 @@ class _CallScreenState extends State<CallScreen> {
                       icon: Icons.call_end,
                       label: 'End',
                       color: Colors.red,
-                      onTap: () {
-                        callService.endCall();
-                        Navigator.pop(context);
-                      },
+                      onTap: callService.endCall,
                     ),
                   ],
                 ),

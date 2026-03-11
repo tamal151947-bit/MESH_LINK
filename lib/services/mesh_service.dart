@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
@@ -5,10 +7,13 @@ import '../models/peer.dart';
 
 class MeshService extends ChangeNotifier {
   final Strategy strategy = Strategy.P2P_CLUSTER;
-  final String deviceId = 'Device_${DateTime.now().millisecondsSinceEpoch}';
+  String deviceId =
+      'Node-${Random().nextInt(0xFFFF).toRadixString(16).toUpperCase().padLeft(4, '0')}';
 
-  Map<String, MeshPeer> connectedPeers = {};
-  Set<String> seenPacketIds = {};
+  final Map<String, MeshPeer> connectedPeers = {};
+  // Holds displayName for connections that are initiated but not yet confirmed
+  final Map<String, String> _pendingNames = {};
+  final Set<String> seenPacketIds = {};
 
   Function(String raw, String senderEndpointId)? onPacketReceived;
 
@@ -22,13 +27,8 @@ class MeshService extends ChangeNotifier {
       deviceId,
       strategy,
       onConnectionInitiated: _handleConnectionInitiated,
-      onConnectionResult: (id, status) {
-        if (status == Status.CONNECTED) notifyListeners();
-      },
-      onDisconnected: (id) {
-        connectedPeers.remove(id);
-        notifyListeners();
-      },
+      onConnectionResult: _handleConnectionResult,
+      onDisconnected: _handleDisconnected,
     );
   }
 
@@ -41,13 +41,8 @@ class MeshService extends ChangeNotifier {
           deviceId,
           id,
           onConnectionInitiated: _handleConnectionInitiated,
-          onConnectionResult: (id, status) {
-            if (status == Status.CONNECTED) notifyListeners();
-          },
-          onDisconnected: (id) {
-            connectedPeers.remove(id);
-            notifyListeners();
-          },
+          onConnectionResult: _handleConnectionResult,
+          onDisconnected: _handleDisconnected,
         );
       },
       onEndpointLost: (id) {},
@@ -55,12 +50,8 @@ class MeshService extends ChangeNotifier {
   }
 
   void _handleConnectionInitiated(String id, ConnectionInfo info) {
-    connectedPeers[id] = MeshPeer(
-      endpointId: id,
-      displayName: info.endpointName,
-      lastSeen: DateTime.now(),
-      isConnected: true,
-    );
+    // Store display name temporarily — we'll promote to connectedPeers on CONNECTED
+    _pendingNames[id] = info.endpointName;
     Nearby().acceptConnection(
       id,
       onPayLoadRecieved: (endId, payload) {
@@ -71,6 +62,26 @@ class MeshService extends ChangeNotifier {
       },
       onPayloadTransferUpdate: (endId, update) {},
     );
+  }
+
+  void _handleConnectionResult(String id, Status status) {
+    if (status == Status.CONNECTED) {
+      final name = _pendingNames.remove(id) ?? id;
+      connectedPeers[id] = MeshPeer(
+        endpointId: id,
+        displayName: name,
+        lastSeen: DateTime.now(),
+        isConnected: true,
+      );
+    } else {
+      _pendingNames.remove(id);
+    }
+    notifyListeners();
+  }
+
+  void _handleDisconnected(String id) {
+    connectedPeers.remove(id);
+    _pendingNames.remove(id);
     notifyListeners();
   }
 

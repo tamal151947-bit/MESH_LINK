@@ -31,11 +31,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<MeshMessage> _filteredMessages(ChatService chat, String deviceId) {
     return chat.messages.where((m) {
-      final isForUs = m.toId == null ||
-          m.toId == deviceId ||
-          m.fromId == widget.peer.endpointId;
-      final isFromPeer = m.fromId == widget.peer.endpointId;
-      return isFromPeer || isForUs;
+      // Messages from this peer (fromId is the remote's advertised deviceId)
+      final isFromPeer = m.fromId == widget.peer.displayName;
+      // Messages we sent to this peer
+      final isFromMeToPeer =
+          m.fromId == deviceId && m.toId == widget.peer.displayName;
+      return isFromPeer || isFromMeToPeer;
     }).toList();
   }
 
@@ -50,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendText(ChatService chat) {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
-    chat.sendText(text, toId: widget.peer.endpointId);
+    chat.sendText(text, toId: widget.peer.displayName);
     _textController.clear();
     _scrollToBottom();
   }
@@ -71,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.call),
             onPressed: () {
               callService.startCall(
-                  widget.peer.endpointId, widget.peer.displayName);
+                  widget.peer.displayName, widget.peer.displayName);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const CallScreen()),
@@ -126,12 +127,12 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: const Icon(Icons.send),
               onPressed: () => _sendText(chat),
             ),
-            GestureDetector(
-              onLongPressStart: (_) => voice.startRecording(),
-              onLongPressEnd: (_) async {
+            Listener(
+              onPointerDown: (_) => voice.startRecording(),
+              onPointerUp: (_) async {
                 final encoded = await voice.stopAndEncode();
                 if (encoded != null) {
-                  chat.sendVoice(encoded, toId: widget.peer.endpointId);
+                  chat.sendVoice(encoded, toId: widget.peer.displayName);
                 }
               },
               child: Consumer<VoiceService>(

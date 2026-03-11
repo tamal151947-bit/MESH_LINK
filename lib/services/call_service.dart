@@ -164,6 +164,9 @@ class CallService extends ChangeNotifier {
       await _pc!.addTrack(track, _localStream!);
     }
 
+    // Route audio through the speaker (not earpiece) on Android
+    await Helper.setSpeakerphoneOn(true);
+
     _pc!.onIceCandidate = (candidate) {
       if (candidate.candidate == null) return;
       chat.sendSignal(
@@ -187,6 +190,7 @@ class CallService extends ChangeNotifier {
   }
 
   void _cleanup() {
+    Helper.setSpeakerphoneOn(false);
     _pc?.close();
     _pc = null;
     _localStream?.dispose();

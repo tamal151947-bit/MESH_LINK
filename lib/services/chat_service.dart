@@ -26,8 +26,11 @@ class ChatService extends ChangeNotifier {
 
     // Route call signals to CallService
     if (msg.type == MessageType.call_signal) {
-      CallService.instance?.handleSignal(msg);
-      // Relay call signals if not targeted at us
+      // Only dispatch if signal is addressed to us (or broadcast)
+      if (msg.toId == null || msg.toId == mesh.deviceId) {
+        CallService.instance?.handleSignal(msg);
+      }
+      // Don't relay if it was addressed to us
       if (msg.toId != null && msg.toId == mesh.deviceId) return;
       if (msg.hops < 10) {
         msg.hops += 1;
@@ -37,17 +40,26 @@ class ChatService extends ChangeNotifier {
       return;
     }
 
-    // If targeted at us: consume and do NOT relay
-    if (msg.toId != null && msg.toId == mesh.deviceId) {
-      messages.add(msg);
-      notifyListeners();
+    // Targeted message
+    if (msg.toId != null) {
+      if (msg.toId == mesh.deviceId) {
+        // For us: store, don't relay
+        messages.add(msg);
+        notifyListeners();
+      } else {
+        // For someone else: relay only, don't store
+        if (msg.hops < 10) {
+          msg.hops += 1;
+          mesh.broadcast(jsonEncode(msg.toJson()),
+              excludeEndpoint: senderEndpointId);
+        }
+      }
       return;
     }
 
-    // Broadcast or relay-targeted message: add locally and relay
+    // Broadcast (toId == null): store + relay
     messages.add(msg);
     notifyListeners();
-
     if (msg.hops < 10) {
       msg.hops += 1;
       mesh.broadcast(jsonEncode(msg.toJson()),

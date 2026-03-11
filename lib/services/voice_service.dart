@@ -28,11 +28,13 @@ class VoiceService extends ChangeNotifier {
   }
 
   Future<String?> stopAndEncode() async {
+    if (!isRecording) return null;
     final path = await _recorder.stop();
     isRecording = false;
     notifyListeners();
     if (path == null) return null;
     final bytes = await File(path).readAsBytes();
+    if (bytes.isEmpty) return null;
     return base64Encode(bytes);
   }
 

@@ -129,7 +129,7 @@ class _PeerTile extends StatelessWidget {
             icon: const Icon(Icons.call, color: Colors.teal),
             tooltip: 'Call',
             onPressed: () {
-              callService.startCall(peer.endpointId, peer.displayName);
+              callService.startCall(peer.displayName, peer.displayName);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const CallScreen()),
