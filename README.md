@@ -189,6 +189,11 @@ Testing requires **3 physical Android devices** on Android 10 or later. WiFi sho
 | Disconnection | Kill app | — | — | Mesh self-heals; C reconnects to A |
 
 ---
+## Apk Build
+
+https://drive.google.com/file/d/16vyuYAnuxbvokqJTreew4oc5GHST9YcF/view?usp=drivesdk
+
+---
 
 ## Demo
 
