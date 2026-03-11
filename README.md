@@ -20,24 +20,49 @@ MeshLink is a Flutter application that enables structured, resilient mesh networ
 ### 🎥 Demo Video
 
 Demo Video:  
-WhatsApp.Video.2026-03-11.at.5.12.13.PM.mp4
 
-(You can also upload it to YouTube later and paste the link here)
+
+https://github.com/user-attachments/assets/012ab89a-68ca-437b-b3b3-5ab7e4fb30db
+
+
 
 ## 📱 App Screenshots
 
-(Add real screenshots here later)
+# Home Screen 
 
-Home Screen  
-Chat Screen  
-Voice Message  
-Call Screen
+![WhatsApp Image 2026-03-11 at 5 06 13 PM](https://github.com/user-attachments/assets/894685a7-6520-4f53-b5b9-6639d6d986c3)
+![WhatsApp Image 2026-03-11 at 5 06 14 PM](https://github.com/user-attachments/assets/e76058fb-a728-4e40-b12a-1423a753cee8)
+![WhatsApp Image 2026-03-11 at 5 06 15 PM](https://github.com/user-attachments/assets/c79b36ef-aa1b-4f36-8d25-e56315a88ec1)
+![WhatsApp Image 2026-03-11 at 5 06 15 PM (1)](https://github.com/user-attachments/assets/d7b7fc29-8488-43d4-94f4-8972bd75c893) 
+![WhatsApp Image 2026-03-11 at 5 06 16 PM](https://github.com/user-attachments/assets/c76ebe23-f4d3-4b75-81da-1fa2859eeb72)
+![WhatsApp Image 2026-03-11 at 5 06 18 PM](https://github.com/user-attachments/assets/1448e852-0b9f-4fe9-9362-80337dfbe6e3)
+
+# Chat Screen 
+
+![WhatsApp Image 2026-03-11 at 5 07 00 PM](https://github.com/user-attachments/assets/4bc6d943-4497-47fd-a3f5-c6f9338c978d)
+![WhatsApp Image 2026-03-11 at 5 07 01 PM](https://github.com/user-attachments/assets/95805e02-5f5e-4970-9ace-9072e9a9a12a)
+![WhatsApp Image 2026-03-11 at 5 07 01 PM (1)](https://github.com/user-attachments/assets/d632c8e6-eaa3-43fa-b0ef-f0f9075a82c7)
+
+# Voice Message 
+
+![WhatsApp Image 2026-03-11 at 5 07 01 PM](https://github.com/user-attachments/assets/1d99ac0d-634e-4618-b3cf-f739a6c05411)
+
+# Call Screen
+
+![WhatsApp Image 2026-03-11 at 5 06 18 PM (1)](https://github.com/user-attachments/assets/407a3e9e-40dc-4b87-8713-deac85c80ddd)
+![WhatsApp Image 2026-03-11 at 5 07 01 PM (3)](https://github.com/user-attachments/assets/340a7b5a-c053-413c-a003-616e3992080a)
+
+# Emergency Broadcast Message
+
+![WhatsApp Image 2026-03-11 at 5 06 17 PM](https://github.com/user-attachments/assets/08a17070-a506-4e87-b976-c7e685e4d6c7)
+
 
 ## 🧠 Mesh Architecture Diagram
 
-(You can later upload an architecture diagram image)
+![pic1](https://github.com/user-attachments/assets/693c8ed3-5b26-4215-90a4-26dad544fd34)
+![pic2](https://github.com/user-attachments/assets/dd9b22b4-8d0f-4dbd-aa89-ecb76caffc2e)
+![pic3](https://github.com/user-attachments/assets/1d995bc3-197d-4af1-97d0-3e90991bf58c)
 
-Example:
 
 ## 📚 Table of Contents
 
@@ -107,27 +132,27 @@ Voice messages: Recorded with record, encoded to base64, transmitted as JSON pay
 lib/
 ├── main.dart
 ├── models/
-│   ├── message.dart
-│   ├── peer.dart
-│   └── call_session.dart
+│   ├── message.dart            # Chat + voice message model
+│   ├── peer.dart               # Connected device info
+│   └── call_session.dart       # Call state model
 │
 ├── services/
-│   ├── mesh_service.dart
-│   ├── chat_service.dart
-│   ├── voice_service.dart
-│   └── call_service.dart
+│   ├── mesh_service.dart       # WiFi Direct core — advertising + discovery
+│   ├── chat_service.dart       # Text message send / receive / relay
+│   ├── voice_service.dart      # Record, encode, send, play voice notes
+│   └── call_service.dart       # WebRTC signaling over mesh
 │
 ├── screens/
-│   ├── home_screen.dart
-│   ├── chat_screen.dart
-│   ├── call_screen.dart
-│   └── triage_screen.dart
+│   ├── home_screen.dart        # Mesh map + peer list
+│   ├── chat_screen.dart        # Messaging UI
+│   ├── call_screen.dart        # Active call UI
+│   └── triage_screen.dart      # Emergency broadcast form
 │
 └── widgets/
-    ├── mesh_map.dart
-    ├── message_bubble.dart
-    ├── voice_bubble.dart
-    └── call_overlay.dart
+    ├── mesh_map.dart           # Visual node graph
+    ├── message_bubble.dart     # Chat bubble with hop badge
+    ├── voice_bubble.dart       # Play/pause waveform widget
+    └── call_overlay.dart       # Incoming call banner
 ```
 
 ## ⚙️ Getting Started
@@ -153,15 +178,18 @@ flutter run
 ## 📦 Dependencies
 
 ```yaml
-nearby_connections: ^4.1.0
-flutter_webrtc: ^0.9.47
-record: ^5.0.4
-just_audio: ^0.9.36
-provider: ^6.1.0
-uuid: ^4.3.3
-path_provider: ^2.1.2
-permission_handler: ^11.3.0
-encrypt: ^5.0.3
+dependencies:
+  flutter:
+    sdk: flutter
+  nearby_connections: ^4.1.0      # WiFi Direct mesh transport
+  flutter_webrtc: ^0.9.47         # Real-time voice calling
+  record: ^5.0.4                  # Audio recording
+  just_audio: ^0.9.36             # Audio playback
+  provider: ^6.1.0                # State management
+  uuid: ^4.3.3                    # Unique packet IDs
+  path_provider: ^2.1.2           # Temp file paths
+  permission_handler: ^11.3.0     # Runtime permissions
+  encrypt: ^5.0.3                 # Optional AES encryption
 ```
 
 ## 🔐 Permissions
@@ -169,19 +197,24 @@ encrypt: ^5.0.3
 Add to AndroidManifest.xml
 
 ```text
-BLUETOOTH
-BLUETOOTH_ADMIN
-ACCESS_WIFI_STATE
-CHANGE_WIFI_STATE
-ACCESS_FINE_LOCATION
-NEARBY_WIFI_DEVICES
+<!-- WiFi Direct / Nearby Connections -->
+<uses-permission android:name="android.permission.BLUETOOTH"/>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"/>
 
-RECORD_AUDIO
-MODIFY_AUDIO_SETTINGS
+<!-- Microphone -->
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-READ_EXTERNAL_STORAGE
-WRITE_EXTERNAL_STORAGE
-CAMERA
+<!-- Temp file storage for voice messages -->
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+<!-- Optional: video calling -->
+<uses-permission android:name="android.permission.CAMERA"/>
 ```
 
 ## 🛠 Build Plan
@@ -215,7 +248,7 @@ Testing requires 3 Android devices.
 
 APK Download:
 
-https://drive.google.com/file/d/16vyuYAnuxbvokqJTreew4oc5GHST9YcF/view
+https://drive.google.com/file/d/1IfzvklMEI16f69HWfpEBkn_ZgnjNDomF/view?usp=drive_link
 
 ## 📡 Packet Format
 
@@ -226,9 +259,12 @@ Text message:
   "id": "uuid-v4",
   "type": "text",
   "fromId": "Device_1234",
+  "fromName": "Device_1234",
+  "toId": null,
   "content": "Need help on 3rd floor",
   "severity": "CRITICAL",
-  "hops": 0
+  "hops": 0,
+  "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
@@ -238,7 +274,11 @@ Voice message:
 {
   "id": "uuid-v4",
   "type": "voice",
-  "content": "<base64 audio>"
+  "fromId": "Device_1234",
+  "toId": "Device_5678",
+  "content": "<base64-encoded AAC audio>",
+  "hops": 0,
+  "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
@@ -246,8 +286,13 @@ WebRTC call signal:
 
 ```json
 {
+  "id": "uuid-v4",
   "type": "call_signal",
-  "content": "{\"type\":\"offer\"}"
+  "fromId": "Device_1234",
+  "toId": "Device_5678",
+  "content": "{\"type\":\"offer\",\"sdp\":\"...\"}",
+  "hops": 0,
+  "timestamp": "2024-01-01T12:00:00Z"
 }
 ```
 
