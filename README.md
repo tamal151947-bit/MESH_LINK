@@ -111,13 +111,34 @@ No single point of failure — mesh self-heals when nodes disconnect or rejoin.
 ## 🏗 Architecture
 
 ```text
-Phone A ←——WiFi Direct——→ Phone B ←——WiFi Direct——→ Phone C
-  (advertise + discover)    (relay node)               (discover only)
-         ↑                        ↑                          ↑
-    MeshService             MeshService                MeshService
-    ChatService             ChatService                ChatService
-    VoiceService            VoiceService               VoiceService
-    CallService             CallService                CallService
+                   MeshLink Architecture
+
+                  Flutter Application
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+        ▼                ▼                ▼
+  Home Screen      Chat Screen     Call Screen
+        │                │                │
+        └────────────────┼────────────────┘
+                         │
+                  Provider (State Management)
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+        ▼                ▼                ▼
+  MeshService      ChatService     VoiceService
+                         │                │
+                         ▼                ▼
+                   CallService (WebRTC)
+                         │
+                  Nearby Connections
+                  (WiFi Direct / Mesh)
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+     Phone A         Phone B          Phone C
+      (Node)        (Relay Node)       (Node)
 ```
 
 Transport layer: nearby_connections (WiFi Direct, P2P_CLUSTER strategy)
